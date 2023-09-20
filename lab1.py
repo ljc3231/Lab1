@@ -6,6 +6,7 @@
 import heapq
 import sys
 import math
+import numpy as np
 from PIL import Image
 
 
@@ -40,7 +41,7 @@ pavedRoadSpeed = 2
 footpathSpeed = 2             
 outOfBoundsSpeed = 0            
 
-#points have form [x, y, z]
+#points have form [col, row, height]
 #returns 3D straight line distance
 def distance(point1, point2):
     #3D pythagoream theorum
@@ -52,7 +53,9 @@ def distance(point1, point2):
     return distance
 
 
-#start and end both 2d tuples of form [x, y]
+
+
+#start and end both 2d tuples of form [col, row]
 def drawPath(filepath, start, end):
     with Image.open(filepath) as img:
         im._copy()
@@ -73,10 +76,33 @@ if __name__ == "__main__":
     #PIL imports img, copy img, draw on copy, output copy
     with Image.open(terrainImg) as img:
         img.load()
-    #get pixel vals
-    pixels[395][500]
-    rgb_im = im.convert('RGB')
-    for y in range(0, 395):
-        for x in range(0, 500):
-            r, g, b = rgb_im.getpixel((x, y)) 
-            pixels[x][y] = (r, g, b)
+    #get pixel colors
+    #TODO: Successfully giving color for pixel in [col][row], but overflows at row 395?
+    cols = 395
+    rows = 500
+    pixelcolors = [[0 for j in range(cols)] for i in range(rows)]
+
+    rgb_im = img.convert('RGB')
+    print(pixelcolors[100][100])
+    for row in range(0, 500):
+        for col in range(0, 395):   
+            r, g, b = rgb_im.getpixel((col, row)) 
+            pixelcolors[col][row] = (r, g, b)
+            print(col, row, pixelcolors[col][row])
+            
+    #get pixel elevations
+    cols = 400
+    rows = 500
+    pixelheights = [[0 for j in range(cols)] for i in range(rows)]
+    with open(elevationFile, 'r') as elevations:
+        data = [line.rstrip() for line in elevations]
+    row = 0
+    for line in data:       
+        parsedData = line.split()
+        col = 0
+        for height in parsedData:
+            pixelheights[col][row] = height
+            col = col + 1
+        row = row + 1
+    row = 0
+    col = 0
