@@ -53,8 +53,6 @@ def distance(point1, point2):
     return distance
 
 
-
-
 #start and end both 2d tuples of form [col, row]
 def drawPath(filepath, start, end):
     with Image.open(filepath) as img:
@@ -77,10 +75,10 @@ if __name__ == "__main__":
     with Image.open(terrainImg) as img:
         img.load()
     #get pixel colors
-    #TODO: Successfully giving color for pixel in [col][row], but overflows at row 395?
+   
     cols = 395
     rows = 500
-    pixelcolors = [[0 for j in range(cols)] for i in range(rows)]
+    pixelcolors = [[0 for j in range(rows)] for i in range(cols)]
 
     rgb_im = img.convert('RGB')
     print(pixelcolors[100][100])
@@ -93,16 +91,24 @@ if __name__ == "__main__":
     #get pixel elevations
     cols = 400
     rows = 500
-    pixelheights = [[0 for j in range(cols)] for i in range(rows)]
+    pixelheights = [[0 for j in range(rows)] for i in range(cols)]
     with open(elevationFile, 'r') as elevations:
         data = [line.rstrip() for line in elevations]
     row = 0
     for line in data:       
         parsedData = line.split()
         col = 0
+        print(parsedData)
+        print("\n")
         for height in parsedData:
             pixelheights[col][row] = height
             col = col + 1
         row = row + 1
     row = 0
     col = 0
+
+    #1. add starting node to heapq
+    #2. add all children to heapq, sort
+    #3. pop lowest node, run test/solution case
+    #4. go to next lowest, add its children,
+    #repeat 3-4
