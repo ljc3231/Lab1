@@ -112,3 +112,10 @@ if __name__ == "__main__":
     #3. pop lowest node, run test/solution case
     #4. go to next lowest, add its children,
     #repeat 3-4
+    
+    #Get start
+    
+    with open(pathFile, 'r') as points:
+        start = points.readline().split()
+        
+            
