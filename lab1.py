@@ -7,7 +7,8 @@ import heapq
 import sys
 import math
 import numpy as np
-from PIL import Image
+# import PIL
+from PIL import Image, ImageDraw
 
 
 #Global Variables
@@ -26,8 +27,6 @@ lake = (0, 0, 255)                      #Blue
 pavedRoad = (71, 51, 3)                 #Brown          
 footpath = (0, 0, 0)                    #Black 
 outOfBounds = (205, 0, 101)             #Magenta
-
-finalPath = (200, 100, 230)             #Purple
 
 #Terrain Speeds in m/s
 openLandSpeed = 3                        
@@ -52,13 +51,21 @@ def distance(point1, point2):
     
     return distance
 
+def getColor(col, row):
+    r, g, b = rgb_im.getpixel((col, row)) 
+    return r, g, b
+
 
 #start and end both 2d tuples of form [col, row]
-def drawPath(filepath, start, end):
+def drawPath(filepath, line):
+    finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
-        im._copy()
-    PIL.ImageDraw.Draw(img, "RGBA")
-    ImageDraw.line((start[0], start[1]), (end[0], end[1]), fill=finalPath, width=1, joint=None)
+        draw = ImageDraw.Draw(img, "RGBA")
+        for start, end in line:
+            draw.line([start, end], fill=finalPath, width=5, joint=None)
+            print([start, end])
+        img.show()
+    
 
 
 if __name__ == "__main__":
@@ -74,19 +81,19 @@ if __name__ == "__main__":
     #PIL imports img, copy img, draw on copy, output copy
     with Image.open(terrainImg) as img:
         img.load()
-    #get pixel colors
-   
-    cols = 395
-    rows = 500
-    pixelcolors = [[0 for j in range(rows)] for i in range(cols)]
+        
+    # get pixel colors
+    # cols = 395
+    # rows = 500
+    # pixelcolors = [[0 for j in range(rows)] for i in range(cols)]
 
-    rgb_im = img.convert('RGB')
-    print(pixelcolors[100][100])
-    for row in range(0, 500):
-        for col in range(0, 395):   
-            r, g, b = rgb_im.getpixel((col, row)) 
-            pixelcolors[col][row] = (r, g, b)
-            print(col, row, pixelcolors[col][row])
+    # rgb_im = img.convert('RGB')
+    # print(pixelcolors[100][100])
+    # for row in range(0, 500):
+    #     for col in range(0, 395):   
+    #         r, g, b = rgb_im.getpixel((col, row)) 
+    #         pixelcolors[col][row] = (r, g, b)
+    #         print(col, row, pixelcolors[col][row])
             
     #get pixel elevations
     cols = 400
@@ -113,9 +120,30 @@ if __name__ == "__main__":
     #4. go to next lowest, add its children,
     #repeat 3-4
     
-    #Get start
+    #Get points
     
-    with open(pathFile, 'r') as points:
-        start = points.readline().split()
-        
-            
+    points = []
+    
+    with open(pathFile, 'r') as pointFile:
+        points = (pointFile.read().split("\n"))
+
+    print(points)
+    line = []    
+    #Go through each pair of points, get and draw the path
+    i = 0
+    while i < (len(points) - 2):
+        start = points[i].split(" ")
+        start[0] = int(start[0])
+        start[1] = int(start[1])
+        end = points[i + 1].split(" ")
+        end[0] = int(end[0])
+        end[1] = int(end[1]) 
+        # print(start)
+        # print(end)
+        pair = []
+        pair.append(tuple(start))
+        pair.append(tuple(end))
+        line.append(tuple(pair))
+        i = i + 1
+    drawPath(terrainImg, line)
+    
