@@ -52,8 +52,8 @@ def getColor(col, row):
 
 
 
-def drawPath(filepath, output, line):
-    #print(line)
+def drawPath(filepath, outputFile, line):
+    #print(line
     finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
         output = img.copy()
@@ -65,7 +65,7 @@ def drawPath(filepath, output, line):
             #print(line[i + 1])
             #print("\n")
             draw.line([tuple(line[i]), tuple(line[i + 1])], fill=finalPath, width=1, joint=None)
-    output.show()
+    output.save(outputFile)
 
 # outOfBounds = (205, 0, 101)
 # impassibleVegetation = (5, 73, 24)
@@ -298,6 +298,9 @@ if __name__ == "__main__":
         finalPath.extend(individualPath)
     finalDist = pathDistance(finalPath)
     print("DIST: " + str(finalDist))
+    
+    print(outputFile)
+    
     drawPath(terrainImg, outputFile, finalPath)
     
     
