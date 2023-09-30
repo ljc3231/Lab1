@@ -213,7 +213,7 @@ def pathDistance(finalPath, pixelheights):
             )
         
         i = i + 1
-    return agg
+    return float(agg)
             
             
 
