@@ -66,6 +66,7 @@ def drawPath(filepath, outputFile, line):
             #print("\n")
             draw.line([tuple(line[i]), tuple(line[i + 1])], fill=finalPath, width=1, joint=None)
     output.save(outputFile)
+    output.show()
 
 # outOfBounds = (205, 0, 101)
 # impassibleVegetation = (5, 73, 24)
