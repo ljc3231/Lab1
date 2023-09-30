@@ -297,7 +297,7 @@ if __name__ == "__main__":
         del individualPath[len(individualPath) - 1]
         finalPath.extend(individualPath)
     finalDist = pathDistance(finalPath)
-    print("DIST: " + str(finalDist))
+    print(float(finalDist))
     
     print(outputFile)
     
