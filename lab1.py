@@ -74,11 +74,12 @@ def checkNeighbors(neighbors):
     i = 0
     valid = []
     for neighbor in neighbors:
-        print(neighbor)
+        # print(neighbor)
+        
         thisColor = neighbor[3]
-        print(thisColor)
-        print(thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101))
-        print("\n")
+        # print(thisColor)
+        # print(thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101))
+        # print("\n")
         if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101):
             del neighbors[i]
             
@@ -91,8 +92,17 @@ def checkNeighbors(neighbors):
 #takes in the current node, the target node, and the height of pixels 2d array
 #returns the 4 neighbors in form (heuristic, location, elevation, color)
 def getNeighbors(curr, target, pixelheight):
-    currX = curr[0]
-    currY = curr[1]
+    # print("a")
+    # print(curr)
+    if len(curr) == 2:
+        currX = curr[0]
+        currY = curr[1]
+    else:
+        currX = curr[1][0]
+        currY = curr[1][1]
+    # print("\nhi")
+    # print(curr)
+    # print("hi")
     target = target + (pixelheight[target[0]][target[1]],)
     #print(target)
     
@@ -121,11 +131,12 @@ def getNeighbors(curr, target, pixelheight):
     )
 
 def heap_sort(queue):
+    
     heap = [(item[0], item) for item in queue]  # Create a heap of tuples (key, item)
     heapq.heapify(heap)  # Convert the heap into a min-heap in-place
     sorted = [heapq.heappop(heap)[1] for _ in range(len(heap))]  # Pop and extract items
-    print(sorted)
-    print("\n")
+    # print(sorted)
+    # print("\n\n")
     return sorted
     
 #takes in map filepath, elevation filepath one pair of (x, y) tuples
@@ -137,26 +148,43 @@ def correctPath(mapFilepath, pixelheights, points):
     visited = []
     path = []
     queue.append(start)
+    # print("to gN")
+    # print(queue[0])
     neighbors = getNeighbors(queue[0], end, pixelheights)
     visited.append(queue[0])
     del queue[0]
     
     #Check if neighbors valid, add to list
-    queue.append(checkNeighbors(neighbors))
+    valids = checkNeighbors(neighbors)
+    for node in valids:
+        queue.append(node)
     #resort heapQ by index
+    
     heap_sort(queue)
 
-    # while queue[0] != '':
-    #     if queue[0] == end:
-    #         path.append(queue[0])
-    #         return path
-    #     else:
-    #         neighbors = getNeighbors(queue[0], end, pixelheights)
-    #         visited.append(queue[0])
-    #         queue.append(checkNeighbors(neighbors))
-    #         heap_sort(queue)
-    #         del queue[0]
-                
+    #queue = queue[0]
+    while queue[0] is not None:
+        print("\n")
+        print(path)
+        print(visited)
+        print(queue[0])
+        # print(queue[1])
+        # print(end)
+        # print("\n")
+        if queue[1] == end:
+            path.append(queue[0])
+            return path
+        elif queue[0] in visited:
+            del queue[0]
+        else:
+            heap_sort(queue)
+            #print(queue)
+            #print(queue[0])
+            neighbors = getNeighbors(queue[0][1], end, pixelheights)
+            visited.append(queue[0])
+            queue.extend(checkNeighbors(neighbors))
+            del queue[0]
+    return("queue cleared, no path found")
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -236,8 +264,6 @@ if __name__ == "__main__":
         line.append(tuple(pair))
         i = i + 1
     for node in line:
-        correctPath(terrainImg, pixelheights, node)
-        print("\n\n")
-            
-    #drawPath(terrainImg, line)
+        path = correctPath(terrainImg, pixelheights, node)
+        drawPath(terrainImg, path)
     
