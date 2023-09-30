@@ -220,10 +220,10 @@ if __name__ == "__main__":
         print("Usage: python3 lab1.py terrain-img elevation-file path-file output-img-filename")
         sys.exit(1)
         
-    terrainImg = sys.argv[1].lower()
-    elevationFile = sys.argv[2].lower()
-    pathFile = sys.argv[3].lower()
-    outputFile = sys.argv[4].lower()
+    terrainImg = sys.argv[1]
+    elevationFile = sys.argv[2]
+    pathFile = sys.argv[3]
+    outputFile = sys.argv[4]
     
     #PIL imports img, copy img, draw on copy, output copy
     with Image.open(terrainImg) as img:
