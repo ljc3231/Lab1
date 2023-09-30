@@ -53,7 +53,7 @@ def getColor(col, row):
 
 
 def drawPath(filepath, outputFile, line):
-    #print(line
+    
     finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
         output = img.copy()
@@ -204,7 +204,7 @@ def pathDistance(finalPath):
     ySize = 7.55
     i = 0
     agg = 0
-    while i < len(finalPath) - 2:
+    while i < len(finalPath) - 1:
         point1 = finalPath[i]
         point2 = finalPath[i + 1]
         xDif = abs(point1[0] - point2[0])
