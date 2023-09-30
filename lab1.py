@@ -52,11 +52,12 @@ def getColor(col, row):
 
 
 
-def drawPath(filepath, line):
+def drawPath(filepath, output, line):
     #print(line)
     finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
-        draw = ImageDraw.Draw(img, "RGBA")
+        output = img.copy()
+        draw = ImageDraw.Draw(output, "RGBA")
         
         for i in range(len(line) - 1):
             # print(line[i])
@@ -64,7 +65,7 @@ def drawPath(filepath, line):
             #print(line[i + 1])
             #print("\n")
             draw.line([tuple(line[i]), tuple(line[i + 1])], fill=finalPath, width=1, joint=None)
-    img.show()
+    output.show()
 
 # outOfBounds = (205, 0, 101)
 # impassibleVegetation = (5, 73, 24)
@@ -296,7 +297,7 @@ if __name__ == "__main__":
         del individualPath[len(individualPath) - 1]
         finalPath.extend(individualPath)
     finalDist = pathDistance(finalPath)
-    print(finalDist)
-    drawPath(terrainImg, finalPath)
+    print("DIST: " + str(finalDist))
+    drawPath(terrainImg, outputFile, finalPath)
     
     
