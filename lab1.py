@@ -66,6 +66,28 @@ def drawPath(filepath, line):
             #print([start, end])
         img.show()
 
+# outOfBounds = (205, 0, 101)
+# impassibleVegetation = (5, 73, 24)
+# lake = (0, 0, 255)
+#Check if neighbors invalid (bad color)
+def checkNeighbors(neighbors):
+    i = 0
+    valid = []
+    for neighbor in neighbors:
+        print(neighbor)
+        thisColor = neighbor[3]
+        print(thisColor)
+        print(thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101))
+        print("\n")
+        if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101):
+            del neighbors[i]
+            
+        else:
+            i = i + 1   
+            valid.append(neighbor)
+    i = 0
+    return valid
+
 #takes in the current node, the target node, and the height of pixels 2d array
 #returns the 4 neighbors in form (heuristic, location, elevation, color)
 def getNeighbors(curr, target, pixelheight):
@@ -98,18 +120,12 @@ def getNeighbors(curr, target, pixelheight):
         ]
     )
 
-# def heapSort(queue):
-#     heapq.heapify(queue)
-#     sorted = []
-#     while queue:
-#         sorted.append(heapq.heappop(queue))
-#     return sorted
-
 def heap_sort(queue):
     heap = [(item[0], item) for item in queue]  # Create a heap of tuples (key, item)
     heapq.heapify(heap)  # Convert the heap into a min-heap in-place
     sorted = [heapq.heappop(heap)[1] for _ in range(len(heap))]  # Pop and extract items
-    #print(sorted)
+    print(sorted)
+    print("\n")
     return sorted
     
 #takes in map filepath, elevation filepath one pair of (x, y) tuples
@@ -119,17 +135,28 @@ def correctPath(mapFilepath, pixelheights, points):
     end = points[1]
     queue = []
     visited = []
+    path = []
     queue.append(start)
-    queue.extend(getNeighbors(queue[0], end, pixelheights))
+    neighbors = getNeighbors(queue[0], end, pixelheights)
     visited.append(queue[0])
     del queue[0]
+    
+    #Check if neighbors valid, add to list
+    queue.append(checkNeighbors(neighbors))
     #resort heapQ by index
     heap_sort(queue)
-    print(queue)
-    #
-    
-    
 
+    # while queue[0] != '':
+    #     if queue[0] == end:
+    #         path.append(queue[0])
+    #         return path
+    #     else:
+    #         neighbors = getNeighbors(queue[0], end, pixelheights)
+    #         visited.append(queue[0])
+    #         queue.append(checkNeighbors(neighbors))
+    #         heap_sort(queue)
+    #         del queue[0]
+                
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -210,6 +237,7 @@ if __name__ == "__main__":
         i = i + 1
     for node in line:
         correctPath(terrainImg, pixelheights, node)
+        print("\n\n")
             
     #drawPath(terrainImg, line)
     
