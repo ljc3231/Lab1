@@ -58,15 +58,15 @@ def getColor(col, row):
 
 
 def drawPath(filepath, line):
-    print(line)
+    #print(line)
     finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
         draw = ImageDraw.Draw(img, "RGBA")
         
         for i in range(len(line) - 1):
             # print(line[i])
-            print("hi")
-            print(line[i + 1])
+            #print("hi")
+            #print(line[i + 1])
             #print("\n")
             draw.line([tuple(line[i]), tuple(line[i + 1])], fill=finalPath, width=1, joint=None)
     img.show()
