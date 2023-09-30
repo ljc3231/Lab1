@@ -15,8 +15,8 @@ from PIL import Image, ImageDraw
 #pixel dims in m
 xSize = 10.29
 ySize = 7.55
-
-#Terain Type Colors
+ 
+# Terain Type Colors
 openLand = (248, 148, 18)               #Orange         
 roughMeadow = (255, 192, 0)             #Yellow        
 easyMovementForest = (255, 255, 255)    #White          
@@ -42,10 +42,10 @@ outOfBoundsSpeed = 0
 
 #points have form [col, row, height]
 #returns 3D straight line distance
-def distance(point1, point2):
+def getDistance(point1, point2):
     #3D pythagoream theorum
-    x1, y1, z1 = point1
-    x2, y2, z2 = point2
+    x1, y1, z1 = float(point1[0]), float(point1[1]), float(point1[2])
+    x2, y2, z2 = float(point2[0]), float(point2[1]), float(point1[2])
     
     distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
     
@@ -63,8 +63,71 @@ def drawPath(filepath, line):
         draw = ImageDraw.Draw(img, "RGBA")
         for start, end in line:
             draw.line([start, end], fill=finalPath, width=5, joint=None)
-            print([start, end])
+            #print([start, end])
         img.show()
+
+#takes in the current node, the target node, and the height of pixels 2d array
+#returns the 4 neighbors in form (heuristic, location, elevation, color)
+def getNeighbors(curr, target, pixelheight):
+    currX = curr[0]
+    currY = curr[1]
+    target = target + (pixelheight[target[0]][target[1]],)
+    #print(target)
+    
+    up = (currX, currY + 1)
+    down = (currX, currY - 1)
+    left = (currX - 1, currY)
+    right = (currX + 1, currY)
+    
+    upColor = getColor(up[0], up[1])
+    downColor = getColor(down[0], down[1])
+    leftColor = getColor(left[0], left[1])
+    rightColor = getColor(right[0], right[1])
+    
+    upHeur = getDistance((up[0], up[1], pixelheight[up[0]][up[1]]), target)
+    downHeur = getDistance((down[0], down[1], pixelheight[down[0]][down[1]]), target)
+    leftHeur = getDistance((left[0], left[1], pixelheight[left[0]][left[1]]), target)
+    rightHeur = getDistance((right[0], right[1], pixelheight[right[0]][right[1]]), target)
+       
+    return(
+        [
+            (upHeur, up, pixelheight[up[0]][up[1]], upColor),
+            (downHeur, down, pixelheight[down[0]][down[1]], downColor),
+            (leftHeur, left, pixelheight[left[0]][left[1]], leftColor),
+            (rightHeur, right, pixelheight[right[0]][right[1]], rightColor)
+        ]
+    )
+
+# def heapSort(queue):
+#     heapq.heapify(queue)
+#     sorted = []
+#     while queue:
+#         sorted.append(heapq.heappop(queue))
+#     return sorted
+
+def heap_sort(queue):
+    heap = [(item[0], item) for item in queue]  # Create a heap of tuples (key, item)
+    heapq.heapify(heap)  # Convert the heap into a min-heap in-place
+    sorted = [heapq.heappop(heap)[1] for _ in range(len(heap))]  # Pop and extract items
+    #print(sorted)
+    return sorted
+    
+#takes in map filepath, elevation filepath one pair of (x, y) tuples
+#returns longer set of points, of correct path between the first points
+def correctPath(mapFilepath, pixelheights, points):
+    start = points[0]
+    end = points[1]
+    queue = []
+    visited = []
+    queue.append(start)
+    queue.extend(getNeighbors(queue[0], end, pixelheights))
+    visited.append(queue[0])
+    del queue[0]
+    #resort heapQ by index
+    heap_sort(queue)
+    print(queue)
+    #
+    
     
 
 
@@ -77,23 +140,23 @@ if __name__ == "__main__":
     elevationFile = sys.argv[2].lower()
     pathFile = sys.argv[3].lower()
     outputFile = sys.argv[4].lower()
-  
+    
     #PIL imports img, copy img, draw on copy, output copy
     with Image.open(terrainImg) as img:
         img.load()
         
     # get pixel colors
-    # cols = 395
-    # rows = 500
-    # pixelcolors = [[0 for j in range(rows)] for i in range(cols)]
+    cols = 395
+    rows = 500
+    pixelcolors = [[0 for j in range(rows)] for i in range(cols)]
 
-    # rgb_im = img.convert('RGB')
-    # print(pixelcolors[100][100])
-    # for row in range(0, 500):
-    #     for col in range(0, 395):   
-    #         r, g, b = rgb_im.getpixel((col, row)) 
-    #         pixelcolors[col][row] = (r, g, b)
-    #         print(col, row, pixelcolors[col][row])
+    rgb_im = img.convert('RGB')
+    #print(pixelcolors[100][100])
+    for row in range(0, 500):
+        for col in range(0, 395):   
+            r, g, b = rgb_im.getpixel((col, row)) 
+            pixelcolors[col][row] = (r, g, b)
+            #print(col, row, pixelcolors[col][row])
             
     #get pixel elevations
     cols = 400
@@ -105,8 +168,8 @@ if __name__ == "__main__":
     for line in data:       
         parsedData = line.split()
         col = 0
-        print(parsedData)
-        print("\n")
+        #print(parsedData)
+        #print("\n")
         for height in parsedData:
             pixelheights[col][row] = height
             col = col + 1
@@ -127,7 +190,7 @@ if __name__ == "__main__":
     with open(pathFile, 'r') as pointFile:
         points = (pointFile.read().split("\n"))
 
-    print(points)
+    #print(points)
     line = []    
     #Go through each pair of points, get and draw the path
     i = 0
@@ -145,5 +208,8 @@ if __name__ == "__main__":
         pair.append(tuple(end))
         line.append(tuple(pair))
         i = i + 1
-    drawPath(terrainImg, line)
+    for node in line:
+        correctPath(terrainImg, pixelheights, node)
+            
+    #drawPath(terrainImg, line)
     
