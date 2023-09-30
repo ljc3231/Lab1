@@ -192,12 +192,12 @@ def correctPath(mapFilepath, pixelheights, points):
             path.append(queue[0][1])
             queue.extend(checkNeighbors(neighbors))
             del queue[0]
-    return("queue cleared, no path found")
+    #return("queue cleared, no path found")
 
 
  
     #takes in path of points, returns path dist   
-def pathDistance(finalPath):
+def pathDistance(finalPath, pixelheights):
     
     #pixel dims in m
     xSize = 10.29
@@ -207,9 +207,11 @@ def pathDistance(finalPath):
     while i < len(finalPath) - 1:
         point1 = finalPath[i]
         point2 = finalPath[i + 1]
-        xDif = abs(point1[0] - point2[0])
-        yDif = abs(point1[1] - point2[1])
-        agg = agg + (xDif * xSize) + (yDif * ySize) 
+        agg = agg + getDistance( 
+            (point1[0] * xSize, point1[1] * ySize, pixelheights[point1[0]][point1[1]]),
+            (point2[0] * xSize, point2[1] * ySize, pixelheights[point2[0]][point2[1]])
+            )
+        
         i = i + 1
     return agg
             
@@ -297,7 +299,7 @@ if __name__ == "__main__":
         individualPath = correctPath(terrainImg, pixelheights, node)
         del individualPath[len(individualPath) - 1]
         finalPath.extend(individualPath)
-    finalDist = pathDistance(finalPath)
+    finalDist = pathDistance(finalPath, pixelheights)
     print(float(finalDist))
     
     print(outputFile)
