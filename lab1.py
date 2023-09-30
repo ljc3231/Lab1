@@ -10,11 +10,6 @@ import numpy as np
 # import PIL
 from PIL import Image, ImageDraw
 
-
-#Global Variables
-#pixel dims in m
-xSize = 10.29
-ySize = 7.55
  
 # Terain Type Colors
 openLand = (248, 148, 18)               #Orange         
@@ -197,6 +192,27 @@ def correctPath(mapFilepath, pixelheights, points):
             del queue[0]
     return("queue cleared, no path found")
 
+
+ 
+    #takes in path of points, returns path dist   
+def pathDistance(finalPath):
+    
+    #pixel dims in m
+    xSize = 10.29
+    ySize = 7.55
+    i = 0
+    agg = 0
+    while i < len(finalPath) - 2:
+        point1 = finalPath[i]
+        point2 = finalPath[i + 1]
+        xDif = abs(point1[0] - point2[0])
+        yDif = abs(point1[1] - point2[1])
+        agg = agg + (xDif * xSize) + (yDif * ySize) 
+        i = i + 1
+    return agg
+            
+            
+
 if __name__ == "__main__":
     if len(sys.argv) != 5:
         print("Usage: python3 lab1.py terrain-img elevation-file path-file output-img-filename")
@@ -279,6 +295,8 @@ if __name__ == "__main__":
         individualPath = correctPath(terrainImg, pixelheights, node)
         del individualPath[len(individualPath) - 1]
         finalPath.extend(individualPath)
+    finalDist = pathDistance(finalPath)
+    print(finalDist)
     drawPath(terrainImg, finalPath)
     
     
