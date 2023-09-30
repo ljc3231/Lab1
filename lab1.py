@@ -56,15 +56,20 @@ def getColor(col, row):
     return r, g, b
 
 
-#start and end both 2d tuples of form [col, row]
+
 def drawPath(filepath, line):
+    print(line)
     finalPath = (200, 100, 230)
     with Image.open(filepath) as img:
         draw = ImageDraw.Draw(img, "RGBA")
-        for start, end in line:
-            draw.line([start, end], fill=finalPath, width=5, joint=None)
-            #print([start, end])
-        img.show()
+        
+        for i in range(len(line) - 1):
+            # print(line[i])
+            print("hi")
+            print(line[i + 1])
+            #print("\n")
+            draw.line([tuple(line[i]), tuple(line[i + 1])], fill=finalPath, width=1, joint=None)
+    img.show()
 
 # outOfBounds = (205, 0, 101)
 # impassibleVegetation = (5, 73, 24)
@@ -131,7 +136,6 @@ def getNeighbors(curr, target, pixelheight):
     )
 
 def heap_sort(queue):
-    
     heap = [(item[0], item) for item in queue]  # Create a heap of tuples (key, item)
     heapq.heapify(heap)  # Convert the heap into a min-heap in-place
     sorted = [heapq.heappop(heap)[1] for _ in range(len(heap))]  # Pop and extract items
@@ -160,28 +164,35 @@ def correctPath(mapFilepath, pixelheights, points):
         queue.append(node)
     #resort heapQ by index
     
-    heap_sort(queue)
+    queue = heap_sort(queue)
 
     #queue = queue[0]
     while queue[0] is not None:
-        print("\n")
-        print(path)
-        print(visited)
-        print(queue[0])
+        #Main debug prints
+        # print("\n")
+        # print(path)
+        # print(queue[0][1])
+        # print(end)
+        # print("a")
+        # print(queue)
+        # print(visited)
+        
         # print(queue[1])
         # print(end)
         # print("\n")
-        if queue[1] == end:
+        queue = heap_sort(queue)
+        if queue[0][1] == end:
             path.append(queue[0])
             return path
         elif queue[0] in visited:
             del queue[0]
         else:
-            heap_sort(queue)
+            queue = heap_sort(queue)
             #print(queue)
             #print(queue[0])
             neighbors = getNeighbors(queue[0][1], end, pixelheights)
             visited.append(queue[0])
+            path.append(queue[0][1])
             queue.extend(checkNeighbors(neighbors))
             del queue[0]
     return("queue cleared, no path found")
@@ -263,7 +274,11 @@ if __name__ == "__main__":
         pair.append(tuple(end))
         line.append(tuple(pair))
         i = i + 1
+    finalPath = []
     for node in line:
-        path = correctPath(terrainImg, pixelheights, node)
-        drawPath(terrainImg, path)
+        individualPath = correctPath(terrainImg, pixelheights, node)
+        del individualPath[len(individualPath) - 1]
+        finalPath.extend(individualPath)
+    drawPath(terrainImg, finalPath)
+    
     
