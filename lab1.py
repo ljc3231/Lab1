@@ -75,7 +75,7 @@ def drawPath(filepath, outputFile, line):
 def checkNeighbors(neighbors):
     i = 0
     valid = []
-    print(neighbors)
+    #print(neighbors)
     for neighbor in neighbors:
         # print(neighbor)
         
