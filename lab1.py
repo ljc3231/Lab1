@@ -83,7 +83,7 @@ def checkNeighbors(neighbors):
         thisPoint = neighbor[1]
         
         #Check for invalid colors
-        colorBool =  (thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0))
+        colorBool =  (thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101))
         # print("color:", colorBool)
         # print("point:", pointBool)
         if colorBool:

@@ -1,0 +1,19 @@
+Writeup
+As discussed above, your writeup should include all relevant decisions made in the implementation of your code.
+ That is, how you implemented your cost function, how you implemented your heuristic, and justification for their correctness.
+
+ Liam Cummings
+
+ In my code, I first decided the speeds through the different terrain types by grouping them by "unpassable", "slow", "normal"
+ or "fast", and then gave them speed values corresponding to the terrain types. I also decided that from each pixel, we should 
+ check the neighboring 4 pixels, instead of 8, as it would be similarly shaped paths, just slightly more optimized.
+
+ For my cost function, i decided to use straight line 3D distance between the current point, and the current at the moment target.
+ Upon reaching the first target, I would then go point by point updating the target until the end is achieved. This heuristic
+ is good for this as it is both always shorter/closer than the true distance between the two points, and it represents the 
+ theoretical optimal path from point to point (straight line).
+
+ During my coding, I had a lot of problems getting both the normal map, and elevations to work simulataneously. Often I would get
+ the normal map working, getting a correct path, but then when i tried to bring it to elevation/ I realized that my algorithm
+ did not work well when reaching the edges of a map, and upon fixing that, the original map had broken (but /elevation was working).
+ 
