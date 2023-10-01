@@ -79,11 +79,15 @@ def checkNeighbors(neighbors):
         # print(neighbor)
         
         thisColor = neighbor[3]
+        thisPoint = neighbor[1]
         # print(thisColor)
         # print(thisColor == (0, 0, 255) or thisColor == (5, 73, 
         # 24) or thisColor == (205, 0, 101))
         # print("\n")
-        if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0) or thisColor == None:
+        if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0):
+            del neighbors[i]
+        
+        if thisPoint[0] < 0 or thisPoint[0] > 395 or thisPoint[1] < 0 or thisPoint[1] > 500:
             del neighbors[i]
             
         else:
