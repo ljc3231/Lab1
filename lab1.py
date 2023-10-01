@@ -75,22 +75,21 @@ def drawPath(filepath, outputFile, line):
 def checkNeighbors(neighbors):
     i = 0
     valid = []
-    # print(neighbors)
+    print(neighbors)
     for neighbor in neighbors:
         # print(neighbor)
         
         thisColor = neighbor[3]
         thisPoint = neighbor[1]
         
-        #Check for invalid colors or locations
-        pointBool = (thisPoint[0] < 0 or thisPoint[0] > 395 or thisPoint[1] < 0 or thisPoint[1] > 500)
+        #Check for invalid colors
         colorBool =  (thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0))
         # print("color:", colorBool)
         # print("point:", pointBool)
         if colorBool:
             del neighbors[i]
-        elif pointBool:
-            del neighbors[i]
+        # elif pointBool:
+        #     del neighbors[i]
         else:
             i = i + 1   
             valid.append(neighbor)
@@ -118,25 +117,48 @@ def getNeighbors(curr, target, pixelheight):
     down = (currX, currY - 1)
     left = (currX - 1, currY)
     right = (currX + 1, currY)
+    coords = [up, down, left, right] 
     
     upColor = getColor(up[0], up[1])
     downColor = getColor(down[0], down[1])
     leftColor = getColor(left[0], left[1])
     rightColor = getColor(right[0], right[1])
+    fails = []
+    
+    #coords = [up, down, left, right]   
+    #check up [0]
+    if coords[0][0] < 0  or coords[0][0] > 394 or coords[0][1] < 0 or coords[0][1] > 499:
+        fails.append("up")
+    #check down [1]
+    if coords[1][0] < 0  or coords[1][0] > 394 or coords[1][1] < 0 or coords[1][1] > 499:
+        fails.append("down")
+    #check left [2]
+    if coords[2][0] < 0  or coords[2][0] > 394 or coords[2][1] < 0 or coords[2][1] > 499:
+        fails.append("left")
+    #check right [3]
+    if coords[3][0] < 0  or coords[3][0] > 394 or coords[3][1] < 0 or coords[3][1] > 499:
+        fails.append("up")
     
     upHeur = getDistance((up[0], up[1], pixelheight[up[0]][up[1]]), target)
     downHeur = getDistance((down[0], down[1], pixelheight[down[0]][down[1]]), target)
     leftHeur = getDistance((left[0], left[1], pixelheight[left[0]][left[1]]), target)
     rightHeur = getDistance((right[0], right[1], pixelheight[right[0]][right[1]]), target)
-       
-    return(
-        [
-            (upHeur, up, pixelheight[up[0]][up[1]], upColor),
-            (downHeur, down, pixelheight[down[0]][down[1]], downColor),
-            (leftHeur, left, pixelheight[left[0]][left[1]], leftColor),
-            (rightHeur, right, pixelheight[right[0]][right[1]], rightColor)
-        ]
-    )
+    
+    upFinal = (upHeur, up, pixelheight[up[0]][up[1]], upColor)
+    downFinal = (downHeur, down, pixelheight[down[0]][down[1]], downColor)
+    leftFinal = (leftHeur, left, pixelheight[left[0]][left[1]], leftColor)
+    rightFinal = (rightHeur, right, pixelheight[right[0]][right[1]], rightColor)
+    
+    neighbors = []
+    if "up" not in fails:
+        neighbors.append(upFinal)
+    if "down" not in fails:
+        neighbors.append(downFinal)
+    if "left" not in fails:
+        neighbors.append(leftFinal)
+    if "right" not in fails:
+        neighbors.append(rightFinal)
+    return neighbors
 
 def heap_sort(queue):
     heap = [(item[0], item) for item in queue]  # Create a heap of tuples (key, item)
