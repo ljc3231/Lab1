@@ -80,9 +80,10 @@ def checkNeighbors(neighbors):
         
         thisColor = neighbor[3]
         # print(thisColor)
-        # print(thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101))
+        # print(thisColor == (0, 0, 255) or thisColor == (5, 73, 
+        # 24) or thisColor == (205, 0, 101))
         # print("\n")
-        if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0):
+        if thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0) or thisColor == None:
             del neighbors[i]
             
         else:
