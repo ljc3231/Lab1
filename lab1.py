@@ -21,30 +21,40 @@ impassibleVegetation = (5, 73, 24)      #Dark Green
 lake = (0, 0, 255)                      #Blue           
 pavedRoad = (71, 51, 3)                 #Brown          
 footpath = (0, 0, 0)                    #Black 
-outOfBounds = (205, 0, 101)             #Magenta
-
-#Terrain Speeds in m/s
-openLandSpeed = 3                        
-roughMeadowSpeed = 1                  
-easyMovementForestSpeed = 3          
-slowRunForestSpeed = 2               
-walkForestSpeed = 1                        
-impassibleVegetationSpeed = 0         
-lakeSpeed = 0                                
-pavedRoadSpeed = 2                     
-footpathSpeed = 2             
-outOfBoundsSpeed = 0            
+outOfBounds = (205, 0, 101)             #Magenta         
 
 #points have form [col, row, height]
 #returns 3D straight line distance
-def getDistance(point1, point2):
+#Update: became general heuristic funtion, now returns time from curr to target
+def getDistance(point1, point2, color):
     #3D pythagoream theorum
     x1, y1, z1 = float(point1[0]), float(point1[1]), float(point1[2])
     x2, y2, z2 = float(point2[0]), float(point2[1]), float(point1[2])
     
     distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
     
-    return distance
+    if color == (248, 148, 18):
+        speed = 3
+    elif color == (255, 192, 0):
+        speed = 1
+    elif color == (255, 255, 255):
+        speed = 3
+    elif color == (2, 208, 60):
+        speed = 2
+    elif color == (2, 136, 40):
+        speed = 1
+    elif color == (5, 73, 24):
+        speed = 0.01
+    elif color == (0, 0, 255):
+        speed = 0.01
+    elif color == (71, 51, 3):
+        speed = 2
+    elif color == (0, 0, 0):
+        speed = 2
+    elif color == (205, 0, 101):
+        speed = 0.01
+
+    return distance / speed
 
 def getColor(col, row):
     r, g, b = rgb_im.getpixel((col, row)) 
@@ -139,10 +149,10 @@ def getNeighbors(curr, target, pixelheight):
     if coords[3][0] < 0  or coords[3][0] > 394 or coords[3][1] < 0 or coords[3][1] > 499:
         fails.append("up")
     
-    upHeur = getDistance((up[0], up[1], pixelheight[up[0]][up[1]]), target)
-    downHeur = getDistance((down[0], down[1], pixelheight[down[0]][down[1]]), target)
-    leftHeur = getDistance((left[0], left[1], pixelheight[left[0]][left[1]]), target)
-    rightHeur = getDistance((right[0], right[1], pixelheight[right[0]][right[1]]), target)
+    upHeur = getDistance((up[0], up[1], pixelheight[up[0]][up[1]]), target, upColor)
+    downHeur = getDistance((down[0], down[1], pixelheight[down[0]][down[1]]), target, downColor)
+    leftHeur = getDistance((left[0], left[1], pixelheight[left[0]][left[1]]), target, leftColor)
+    rightHeur = getDistance((right[0], right[1], pixelheight[right[0]][right[1]]), target, rightColor)
     
     upFinal = (upHeur, up, pixelheight[up[0]][up[1]], upColor)
     downFinal = (downHeur, down, pixelheight[down[0]][down[1]], downColor)
@@ -237,7 +247,7 @@ def pathDistance(finalPath, pixelheights):
         point2 = finalPath[i + 1]
         agg = agg + getDistance( 
             (point1[0] * xSize, point1[1] * ySize, pixelheights[point1[0]][point1[1]]),
-            (point2[0] * xSize, point2[1] * ySize, pixelheights[point2[0]][point2[1]])
+            (point2[0] * xSize, point2[1] * ySize, pixelheights[point2[0]][point2[1]]), (2, 136, 40)
             )
         
         i = i + 1
