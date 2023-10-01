@@ -75,9 +75,9 @@ def drawPath(filepath, outputFile, line):
 def checkNeighbors(neighbors):
     i = 0
     valid = []
-    print(neighbors)
+    # print(neighbors)
     for neighbor in neighbors:
-        print(neighbor)
+        # print(neighbor)
         
         thisColor = neighbor[3]
         thisPoint = neighbor[1]
@@ -85,8 +85,8 @@ def checkNeighbors(neighbors):
         #Check for invalid colors or locations
         pointBool = (thisPoint[0] < 0 or thisPoint[0] > 395 or thisPoint[1] < 0 or thisPoint[1] > 500)
         colorBool =  (thisColor == (0, 0, 255) or thisColor == (5, 73, 24) or thisColor == (205, 0, 101) or thisColor == (0, 0, 0))
-        print("color:", colorBool)
-        print("point:", pointBool)
+        # print("color:", colorBool)
+        # print("point:", pointBool)
         if colorBool:
             del neighbors[i]
         elif pointBool:
